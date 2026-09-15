@@ -2,7 +2,7 @@
 
 DE10-Lite (MAX 10). All parts are in `main.v`, uncomment the one to build.
 
-<img src="IMG_1169.jpeg" width="600">
+<img src="images/IMG_1169.jpeg" width="600">
 
 ## Parts
 
