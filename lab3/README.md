@@ -478,24 +478,3 @@ register for the two `seg7` decoders, and `LEDR` is wired straight from `SW`
 
 
 ---
-
-## Notes
-
-- The push buttons are active low, so every clock is `~KEY[n]` and every reset is `KEY[n]`
-  used directly.
-- Parts II and III use `KEY[0]` as the clock instead of `SW1`. A button gives a clean edge
-  to watch, and in Part III it makes the falling edge line up with releasing the button.
-- Part V is two 8-bit registers selected by `SW[9]`, not the manual's two 16-bit numbers on
-  eight displays, because the board has only ten switches and six displays.
-- Unused LEDs are driven to 0 and unused displays to `8'hFF` (blank) in every part.
-- **No timing simulation.** The manual asks for QSim timing simulation in Parts I and II.
-  For the MAX 10, Quartus 25.1 refuses to write a timing netlist: *"Generated the EDA
-  functional simulation netlist because it is the only supported netlist type for this
-  device."* The post-fit simulation therefore checks the fitted logic, not gate delays.
-- The bundled Questa could not check out its license on this machine, so every
-  simulation runs in iverilog. For the post-fit runs, the MAX 10 cell library's IO
-  buffers and unused flash/ADC blocks are Questa-only encrypted cores. `postfit_sim.py`
-  swaps them for pass-through wires and empty shells. The LUT and flip-flop models, which
-  hold all the logic, are Quartus's own, unmodified.
-- `quartus/` holds the project's `main.qpf`/`main.qsf` (DE10-Lite pin assignments) so
-  `postfit_sim.py` can rebuild each part.
