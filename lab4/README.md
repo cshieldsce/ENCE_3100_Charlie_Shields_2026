@@ -355,7 +355,7 @@ Full compile reports **83 logic elements and 31 registers** (26 for the clock di
 `HELLO` scrolls right-to-left across all six displays at one shift per second, then one
 blank frame, then starts again from the right.
 
-<!-- board photo: images/part5_board.jpg or part5.gif -->
+<img src="images/part5.gif" width="320">
 
 ### RTL view
 
