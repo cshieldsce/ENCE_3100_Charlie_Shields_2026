@@ -5,21 +5,21 @@ module tb_lab5;
 	reg [7:0] A = 0;
 	wire [7:0] S;
 	wire ovf;
-	accum #(.N(8)) dut_acc (.clk(clk), .reset_n(reset_n), .sub(sub), .A(A), .S(S), .overflow(ovf));
+	accum dut_acc (.clk(clk), .reset_n(reset_n), .sub(sub), .A(A), .S(S), .overflow(ovf));
 	always #5 clk = ~clk;
 
 	// ---- Parts III / IV / V ----
 	reg  [7:0] a8, b8;
 	wire [15:0] p_arr, p_tree;
-	mult_array #(.N(8), .USE_FA(0)) dut_arr (.A(a8), .B(b8), .P(p_arr));
+	mult_8 dut_arr (.A(a8), .B(b8), .P(p_arr));
 	mult_tree dut_tree (.A(a8), .B(b8), .P(p_tree));
 	wire [7:0] p_fa;
-	mult_array #(.N(4), .USE_FA(1)) dut_fa (.A(a8[3:0]), .B(b8[3:0]), .P(p_fa));
+	mult_4 dut_fa (.A(a8[3:0]), .B(b8[3:0]), .P(p_fa));
 
 	// registered versions
 	wire [15:0] p_reg_arr, p_reg_tree;
-	mult_reg #(.TREE(0)) dut_ra (.clk(clk), .A(a8), .B(b8), .P(p_reg_arr));
-	mult_reg #(.TREE(1)) dut_rt (.clk(clk), .A(a8), .B(b8), .P(p_reg_tree));
+	mult_8_reg dut_ra (.clk(clk), .A(a8), .B(b8), .P(p_reg_arr));
+	mult_tree_reg dut_rt (.clk(clk), .A(a8), .B(b8), .P(p_reg_tree));
 
 	integer errors = 0, i, j;
 	reg [8:0] exp_s;

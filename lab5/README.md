@@ -1,9 +1,8 @@
 # Lab 5: Adders, Subtractors, and Multipliers
 
 Board: **DE10-Lite**, MAX 10 `10M50DAF484C7G`. Verilog modules live in `verilog/`
-(top level `main`). Set `localparam PART` at the top of `main.v` (1 to 5) to pick which
-part to build. `sim/tb_lab5.v` is a self-checking testbench for all parts
-(`iverilog -g2012 sim/tb_lab5.v verilog/{accum,ripple_carry,fa,mult_array,mult_tree,mult_reg}.v`).
+(top level `main`). Every part is in `main.v`; uncomment the one to build. `sim/tb_lab5.v` is a self-checking testbench for all parts
+(`iverilog -g2012 sim/tb_lab5.v verilog/{accum,ripple_carry,fa,adder_4,mult_4,mult_8,mult_tree,mult_8_reg,mult_tree_reg}.v`).
 
 > **Board differences.** The manual targets the DE2 (18 switches, 8 displays). The
 > DE10-Lite has 10 switches, 2 push buttons and 6 displays, so the switch/display
@@ -23,13 +22,11 @@ part to build. `sim/tb_lab5.v` is a self-checking testbench for all parts
 (Figure 2). The adder is the `+` operator:
 
 ```verilog
-module ripple_carry #(
-	parameter WIDTH = 8
-)(
+module ripple_carry (
 	input 		 Cin,
-	input  [WIDTH-1:0] A, B,
+	input  [7:0] A, B,
 	output 		 Cout,
-	output [WIDTH-1:0] Sum
+	output [7:0] Sum
 );
 
 	 assign {Cout, Sum} = A + B + Cin;
@@ -44,7 +41,13 @@ endmodule
 max I/O toggle rate on `KEY[1]`).
 
 <!-- board photo: images/part1_board.jpg -->
-<!-- RTL view: images/part1_rtl.png -->
+
+### RTL view
+
+The `accum` block driven by `SW[7:0]`, `KEY[1]` (clock) and `KEY[0]` (reset), with the
+sum and overflow on `LEDR` ([PDF](images/part1_rtl.pdf)):
+
+<img src="images/part1_rtl.png" width="820">
 
 
 ## Part II: Adder/Subtractor
@@ -53,10 +56,10 @@ Same accumulator with `add_sub` on `SW[9]`. Subtraction is `S + ~A + 1`: `sub`
 XORs every bit of `A` and is also the carry in.
 
 ```verilog
-ripple_carry #(.WIDTH(N)) u_add (
+ripple_carry u_add (
 	.Cin(sub),
 	.A(S),
-	.B(A ^ {N{sub}}),
+	.B(A ^ {8{sub}}),
 	.Cout(cout),
 	.Sum(sum)
 );
@@ -75,10 +78,10 @@ subtracting: the adder carry out is 1 when there is *no* borrow, hence the XOR w
 
 ## Part III: 4x4 Array Multiplier
 
-Figure 4, built from `fa` modules (`mult_array #(.N(4), .USE_FA(1))`). Row 0 is the first
-partial product `A & B[0]`. Row `i` adds `A & B[i]` to the previous row's sum shifted right
-one place, and the low bit of each row is `P[i]`. The last row's sum and carry give
-`P[2N-1:N]`.
+Figure 4, built from `fa` modules via a four-bit `adder_4` (`mult_4.v`). Row 0 is the
+first partial product `A & B[0]`. Each later row adds `A & B[i]` to the previous row's sum
+shifted right one place, and the low bit of each row is `P[i]`. The last row's sum and
+carry give `P[7:4]`.
 
 ```verilog
 module fa (
@@ -102,8 +105,8 @@ Functional simulation (`tb_lab5.v`) checks all 256 `A`/`B` pairs against `*`.
 ## Part IV: 8x8 Registered Multiplier (adder rows)
 
 Same structure as Part III but each row is an 8-bit adder written with `+`
-(`mult_array #(.N(8), .USE_FA(0))`), wrapped in `mult_reg` which registers `A`, `B`
-(input flops) and `P` (output flops) as in Figure 6. Clocked from `MAX10_CLK1_50`.
+(`ripple_carry`, `mult_8.v`), wrapped in `mult_8_reg` which registers `A`, `B` (input
+flops) and `P` (output flops) as in Figure 6. Clocked from `MAX10_CLK1_50`.
 
 **LEs:** 198 (total design, includes the operand-load registers and six seg7 decoders),
 **registers:** 48, **Fmax:** 78.32 MHz.
@@ -114,7 +117,7 @@ Same structure as Part III but each row is an 8-bit adder written with `+`
 ## Part V: 8x8 Registered Multiplier (adder tree)
 
 `mult_tree.v`: eight shifted partial products added in a tree (4 adders, then 2, then 1)
-instead of the row-by-row chain. Same `mult_reg` wrapper (`TREE = 1`).
+instead of the row-by-row chain. Same register wrapper (`mult_tree_reg.v`).
 
 **LEs:** 199, **registers:** 48, **Fmax:** 145.79 MHz.
 
