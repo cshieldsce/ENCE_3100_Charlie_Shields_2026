@@ -75,6 +75,12 @@ subtracting: the adder carry out is 1 when there is *no* borrow, hence the XOR w
 
 <!-- board photo: images/part2_board.jpg -->
 
+### RTL view
+
+Same `accum` block as Part I, with `SW[9]` now driving `sub` ([PDF](images/part2_rtl.pdf)):
+
+<img src="images/part2_rtl.png" width="820">
+
 
 ## Part III: 4x4 Array Multiplier
 
@@ -101,6 +107,13 @@ Functional simulation (`tb_lab5.v`) checks all 256 `A`/`B` pairs against `*`.
 
 <!-- board photo: images/part3_board.jpg -->
 
+### RTL view
+
+`mult_4` takes `A` and `B` from the switches; `A`, `B` and the two product nibbles each
+drive a `seg7` ([PDF](images/part3_rtl.pdf)):
+
+<img src="images/part3_rtl.png" width="820">
+
 
 ## Part IV: 8x8 Registered Multiplier (adder rows)
 
@@ -112,6 +125,14 @@ flops) and `P` (output flops) as in Figure 6. Clocked from `MAX10_CLK1_50`.
 **registers:** 48, **Fmax:** 78.32 MHz.
 
 <!-- board photo: images/part4_board.jpg -->
+
+### RTL view
+
+The `A` and `B` load registers (enabled by `SW[9]`, clocked by `KEY[1]`) feed `mult_8_reg`.
+A 2-to-1 mux picks which operand goes to `HEX5-4`, and `P` drives `HEX3-0`
+([PDF](images/part4_rtl.pdf)):
+
+<img src="images/part4_rtl.png" width="820">
 
 
 ## Part V: 8x8 Registered Multiplier (adder tree)
