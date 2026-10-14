@@ -4,18 +4,6 @@ Board: **DE10-Lite**, MAX 10 `10M50DAF484C7G`. Verilog modules live in `verilog/
 (top level `main`). Every part is in `main.v`; uncomment the one to build. `sim/tb_lab5.v` is a self-checking testbench for all parts
 (`iverilog -g2012 sim/tb_lab5.v verilog/{accum,ripple_carry,fa,adder_4,mult_4,mult_8,mult_tree,mult_8_reg,mult_tree_reg}.v`).
 
-> **Board differences.** The manual targets the DE2 (18 switches, 8 displays). The
-> DE10-Lite has 10 switches, 2 push buttons and 6 displays, so the switch/display
-> mapping is adapted:
-> - Part III: `A` on `SW[7:4]` / `HEX5`, `B` on `SW[3:0]` / `HEX3` (manual: `SW[11:8]`,
->   `HEX6`/`HEX4`). `P` is on `HEX1`-`HEX0` as in the manual.
-> - Parts IV/V: 16 operand bits don't fit on 10 switches. `A` and `B` are loaded from
->   `SW[7:0]` on a `KEY[1]` press, `SW[9]` selects the target (0 = `A`, 1 = `B`).
->   `HEX5`-`HEX4` shows the operand picked by `SW[9]`; `P` is on `HEX3`-`HEX0`.
-> - Parts I/II: unchanged (`SW[7:0]` = `A`, `KEY0` async reset, `KEY1` manual clock,
->   `LEDR[7:0]` = sum, `LEDR[8]` = overflow); `SW[9]` is `add_sub` in Part II.
-
-
 ## Part I: 8-bit Accumulator
 
 `S <= S + A` on each `KEY1` rising edge, with registered carry-out as `overflow`
