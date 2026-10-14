@@ -147,6 +147,13 @@ twice as fast as Part IV for about the same logic.
 
 <!-- board photo: images/part5_board.jpg -->
 
+### RTL view
+
+Same load registers and display wiring as Part IV, with `mult_tree_reg:u_mult` in place of
+`mult_8_reg` ([PDF](images/part5_rtl.pdf)):
+
+<img src="images/part5_rtl.png" width="820">
+
 
 ---
 
